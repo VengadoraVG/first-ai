@@ -17,7 +17,6 @@ namespace Villager {
 
         void Start () {
             _agent = GetComponent<NavMeshAgent>();
-            Debug.Log(LayerMask.NameToLayer("Default"));
         }
 
         void Update () {

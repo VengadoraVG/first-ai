@@ -18,7 +18,7 @@ namespace Villager {
         }
                       
         public static float FullAngle (Vector2 v) {
-            float angle = Mathf.PI + Mathf.Atan(v.y / v.x);
+            float angle = Mathf.Atan(v.y / v.x);
             if (v.x > 0) {
                 angle += 2 * Mathf.PI;
             } else {

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Villager {
     public class EnemyDetector : MonoBehaviour {
+        public delegate void TargetMoveDelegate (Vector3 newPosition, Vector3 oldPosition);
+        public event TargetMoveDelegate OnTargetMove;
+
         public delegate void TargetSwitchDelegate (Collider newTarget, Collider oldTarget);
         public event TargetSwitchDelegate OnTargetSwitch;
         public Collider Target;
@@ -82,7 +85,12 @@ namespace Villager {
         }
 
         private void _TargetMovedHandler (MovementDetector detector, Vector3 oldPosition) {
+            Collider oldTarget = Target;
             SetTarget(_GetBestTarget(Target));
+
+            if (oldTarget == Target && OnTargetMove != null && Target != null) {
+                OnTargetMove(detector.transform.position, oldPosition);
+            }
         }
 
         private void _NonTargetMovedHandler (MovementDetector detector, Vector3 oldPosition) {
@@ -90,6 +98,26 @@ namespace Villager {
 
             if (_IsCloserThanTarget(movedOne)) {
                 SetTarget(movedOne);
+            }
+        }
+        
+        public void UnBlacklist (GameObject enemy) {
+            Collider c = enemy.GetComponent<Collider>();
+            if (_enemies.ContainsKey(c.GetInstanceID())) {
+                _enemies[c.GetInstanceID()].IsBlacklisted = false;
+            }
+
+            SetTarget(_GetBestTarget(Target));
+        }
+
+        public void PutInBlacklist (GameObject enemy) {
+            Collider c = enemy.GetComponent<Collider>();
+            if (_enemies.ContainsKey(c.GetInstanceID())) {
+                _enemies[c.GetInstanceID()].IsBlacklisted = true;
+            }
+
+            if (c == Target) {
+                SetTarget(_GetBestTarget());
             }
         }
 
@@ -107,7 +135,7 @@ namespace Villager {
                 detector.OnMovement += _TargetMovedHandler;
             }
 
-            if (OnTargetSwitch != null) OnTargetSwitch(newTarget, oldTarget);
+            if (newTarget != oldTarget && OnTargetSwitch != null) OnTargetSwitch(newTarget, oldTarget);
         }
     }
 }
