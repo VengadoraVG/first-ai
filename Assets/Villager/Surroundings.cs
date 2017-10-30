@@ -9,7 +9,7 @@ namespace Villager {
 
         public Spot[] Spots;
         public float Radius = 2;
-        
+
         void Start () {
             Spots = new Spot[(int) ((Mathf.PI * Radius) / Surrounder.Radius)];
             float gradesPerSpot = (Mathf.PI * 2) / Spots.Length;

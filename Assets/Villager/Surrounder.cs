@@ -33,6 +33,9 @@ namespace Villager {
 
         void Update () {
             _attempts = 0;
+            if (_currentSpot != null && _currentSpot.Occupier != this) {
+                _SetSpot(null);
+            }
         }
 
         private void _SetSpot (Spot newSpot) {

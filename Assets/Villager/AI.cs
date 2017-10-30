@@ -32,8 +32,10 @@ namespace Villager {
 
         private void _TargetSwitchHandler (Collider newTarget, Collider oldTarget) {
             if (newTarget != null) {
-                if (newTarget.GetComponent<Surroundings>().AttemptToSurround(_surrounder) == null)
+                _surrounder.AbandonSurrounding();
+                if (newTarget.GetComponent<Surroundings>().AttemptToSurround(_surrounder) == null) {
                     _Blacklist(newTarget.gameObject);
+                }
             } else {
                 _surrounder.AbandonSurrounding();
                 _agent.ResetPath();
